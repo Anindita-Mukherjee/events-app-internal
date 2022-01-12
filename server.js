@@ -8,6 +8,17 @@ const express = require('express');
 // https://www.npmjs.com/package/body-parser
 const bodyParser = require('body-parser');
 
+// bring in firestore
+const Firestore = require("@google-cloud/firestore");
+
+// initialize Firestore and set project id from env var
+const firestore = new Firestore(
+    {
+        projectId: process.env.GOOGLE_CLOUD_PROJECT
+    }
+);
+
+
 // create the server
 const app = express();
 
@@ -34,6 +45,8 @@ const mockEvents = {
 // health endpoint - returns an empty array
 app.get('/', (req, res) => {
     res.json([]);
+    
+
 });
 
 // version endpoint to provide easy convient method to demonstrating tests pass/fail
@@ -44,7 +57,8 @@ app.get('/version', (req, res) => {
 // mock events endpoint. this would be replaced by a call to a datastore
 // if you went on to develop this as a real application.
 app.get('/events', (req, res) => {
-    res.json(mockEvents);
+    //res.json(mockEvents);
+    getEvents(req, res);
 });
 
 // Adds an event - in a real solution, this would insert into a cloud datastore.
@@ -57,11 +71,36 @@ app.post('/event', (req, res) => {
         description: req.body.description,
         id : mockEvents.events.length + 1
      }
+
+     firestore.collection("Events").add(ev).then(ret => {
+        getEvents(req, res);
+    });
+
     // add to the mock array
-    mockEvents.events.push(ev);
+    //mockEvents.events.push(ev);
     // return the complete array
-    res.json(mockEvents);
+    //res.json(mockEvents);
 });
+
+function getEvents(req, res) {
+    firestore.collection("Events").get()
+        .then((snapshot) => {
+            if (!snapshot.empty) {
+                const ret = { events: []};
+                snapshot.docs.forEach(element => {
+                    ret.events.push(element.data());
+                }, this);
+                console.log(ret);
+                res.json(ret);
+            } else {
+                 res.json(mockEvents);
+            }
+        })
+        .catch((err) => {
+            console.error('Error getting events', err);
+            res.json(mockEvents);
+        });
+};
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
