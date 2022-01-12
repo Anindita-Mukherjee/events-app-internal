@@ -11,7 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "@google-cloud/firestore": "^5.0.2",
+=======
+>>>>>>> 2bcfe6d71dfb519f450985e0ceb3e24e68259a4b
     "body-parser": "^1.19.0",
     "express": "^4.17.1"
   },

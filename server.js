@@ -8,6 +8,7 @@ const express = require('express');
 // https://www.npmjs.com/package/body-parser
 const bodyParser = require('body-parser');
 
+<<<<<<< HEAD
 // bring in firestore
 const Firestore = require("@google-cloud/firestore");
 
@@ -19,6 +20,8 @@ const firestore = new Firestore(
 );
 
 
+=======
+>>>>>>> 2bcfe6d71dfb519f450985e0ceb3e24e68259a4b
 // create the server
 const app = express();
 
@@ -45,8 +48,11 @@ const mockEvents = {
 // health endpoint - returns an empty array
 app.get('/', (req, res) => {
     res.json([]);
+<<<<<<< HEAD
     
 
+=======
+>>>>>>> 2bcfe6d71dfb519f450985e0ceb3e24e68259a4b
 });
 
 // version endpoint to provide easy convient method to demonstrating tests pass/fail
@@ -57,8 +63,12 @@ app.get('/version', (req, res) => {
 // mock events endpoint. this would be replaced by a call to a datastore
 // if you went on to develop this as a real application.
 app.get('/events', (req, res) => {
+<<<<<<< HEAD
     //res.json(mockEvents);
     getEvents(req, res);
+=======
+    res.json(mockEvents);
+>>>>>>> 2bcfe6d71dfb519f450985e0ceb3e24e68259a4b
 });
 
 // Adds an event - in a real solution, this would insert into a cloud datastore.
@@ -71,6 +81,7 @@ app.post('/event', (req, res) => {
         description: req.body.description,
         id : mockEvents.events.length + 1
      }
+<<<<<<< HEAD
 
      firestore.collection("Events").add(ev).then(ret => {
         getEvents(req, res);
@@ -102,6 +113,14 @@ function getEvents(req, res) {
         });
 };
 
+=======
+    // add to the mock array
+    mockEvents.events.push(ev);
+    // return the complete array
+    res.json(mockEvents);
+});
+
+>>>>>>> 2bcfe6d71dfb519f450985e0ceb3e24e68259a4b
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: err.message });
